@@ -1,3 +1,6 @@
+# Environment variables (do NOT commit real keys)
+.env
+
 # Miscellaneous
 *.class
 *.log

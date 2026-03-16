@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:testflutter/config/database_helper.dart';
 import 'package:testflutter/config/service_locator.dart';
 import 'package:testflutter/data/datasources/remote/ping_remote_data_source.dart';
 import 'package:testflutter/presentation/bloc/note_bloc.dart';
 import 'package:testflutter/presentation/routes/app_router.dart';
-
-const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
 // 🎨 Global theme notifier
 final ValueNotifier<bool> themeNotifier = ValueNotifier(false);
@@ -17,10 +16,14 @@ Future<void> _initializeApp() async {
   try {
     print('[INFO] Starting initialization...');
 
+    // Load environment variables from .env file
+    await dotenv.load(fileName: '.env');
+    final geminiApiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+
     if (geminiApiKey.isEmpty) {
-      print('[WARNING] GEMINI_API_KEY is missing. Run with --dart-define=GEMINI_API_KEY=YOUR_KEY');
+      print('[WARNING] GEMINI_API_KEY is missing. Add it to your .env file.');
     }
-    
+
     // Initialize Database for non-web platforms
     Database? database;
     if (!kIsWeb) {
@@ -30,7 +33,7 @@ Future<void> _initializeApp() async {
     } else {
       print('[INFO] Running on web - using SharedPreferences');
     }
-    
+
     // Setup service locator
     print('[INFO] Setting up service locator...');
     await setupServiceLocator(database, geminiApiKey);
