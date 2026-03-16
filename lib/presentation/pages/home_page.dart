@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testflutter/presentation/bloc/note_bloc.dart';
 import 'package:testflutter/presentation/routes/app_router.dart';
+import 'package:testflutter/presentation/widgets/tap_scale_widget.dart';
 import 'package:testflutter/main.dart' show themeNotifier;
 
 @RoutePage()
@@ -17,6 +18,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<Offset> _slideAnimation;
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnimation;
 
   @override
   void initState() {
@@ -32,12 +35,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
     _animationController.forward();
+
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..repeat(reverse: true);
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.18).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
     context.read<NoteBloc>().add(const GetAllNotesEvent());
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -141,8 +154,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                           itemBuilder: (context, index) {
                             final note = state.notes[index];
-                            return Card(
+                            return TapScaleWidget(
                               key: ValueKey('note-${note.id ?? index}'),
+                              pressedScale: 0.97,
+                              child: Card(
                               margin: const EdgeInsets.symmetric(vertical: 8),
                               child: ListTile(
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -213,6 +228,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   context.pushRoute(NoteDetailRoute(note: note));
                                 },
                               ),
+                            ),
                             );
                           },
                         ),
@@ -234,7 +250,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             builder: (context, state) {
               return Padding(
                 padding: const EdgeInsets.all(24),
-                child: Container(
+                child: TapScaleWidget(
+                  child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -250,7 +267,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       IconButton(
                         iconSize: 48,
                         color: Theme.of(context).colorScheme.primary,
-                        icon: const Icon(Icons.add_box_rounded),
+                        icon: ScaleTransition(
+                          scale: _pulseAnimation,
+                          child: const Icon(Icons.add_box_rounded),
+                        ),
                         onPressed: () async {
                           final result = await context.pushRoute(CreateNoteRoute());
                           if (mounted) {
@@ -273,6 +293,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
+                ),
                 ),
               );
             },

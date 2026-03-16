@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:testflutter/domain/entities/note_entity.dart';
 import 'package:testflutter/presentation/bloc/note_bloc.dart';
+import 'package:testflutter/presentation/widgets/tap_scale_widget.dart';
 
 @RoutePage()
 class CreateNotePage extends StatefulWidget {
@@ -253,7 +254,8 @@ class _CreateNotePageState extends State<CreateNotePage> {
                           Row(
                             children: [
                               Expanded(
-                                child: ElevatedButton.icon(
+                                child: TapScaleWidget(
+                                  child: ElevatedButton.icon(
                                   onPressed: (_isExtracting || _isAutoSummarizing) ? null : _pickImage,
                                   icon: const Icon(Icons.upload_file),
                                   label: Text(_isExtracting ? 'กำลังสแกน...' : 'อัปโหลดรูปเพื่อสแกน'),
@@ -261,10 +263,12 @@ class _CreateNotePageState extends State<CreateNotePage> {
                                     minimumSize: const Size(double.infinity, 48),
                                   ),
                                 ),
+                                ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
-                                child: ElevatedButton.icon(
+                                child: TapScaleWidget(
+                                  child: ElevatedButton.icon(
                                   onPressed: (_isExtracting || _isAutoSummarizing)
                                       ? null
                                       : _extractAndSummarizeFromImage,
@@ -275,6 +279,7 @@ class _CreateNotePageState extends State<CreateNotePage> {
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: const Size(double.infinity, 48),
                                   ),
+                                ),
                                 ),
                               ),
                             ],
@@ -329,7 +334,8 @@ class _CreateNotePageState extends State<CreateNotePage> {
                           Row(
                             children: [
                               Expanded(
-                                child: ElevatedButton.icon(
+                                child: TapScaleWidget(
+                                  child: ElevatedButton.icon(
                                   onPressed: _contentController.text.isEmpty ? null : _summarizeContent,
                                   icon: const Icon(Icons.summarize),
                                   label: const Text('สรุป'),
@@ -337,16 +343,19 @@ class _CreateNotePageState extends State<CreateNotePage> {
                                     minimumSize: const Size(double.infinity, 46),
                                   ),
                                 ),
+                                ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
-                                child: ElevatedButton.icon(
+                                child: TapScaleWidget(
+                                  child: ElevatedButton.icon(
                                   onPressed: _contentController.text.isEmpty ? null : _generateTags,
                                   icon: const Icon(Icons.label),
                                   label: const Text('สร้างแท็ก'),
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: const Size(double.infinity, 46),
                                   ),
+                                ),
                                 ),
                               ),
                             ],
@@ -399,7 +408,8 @@ class _CreateNotePageState extends State<CreateNotePage> {
                     const SizedBox(height: 24),
                     BlocBuilder<NoteBloc, NoteState>(
                       builder: (context, state) {
-                        return ElevatedButton(
+                        return TapScaleWidget(
+                          child: ElevatedButton(
                           onPressed: state is NoteLoading ? null : _saveNote,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
@@ -411,6 +421,7 @@ class _CreateNotePageState extends State<CreateNotePage> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : Text(widget.note == null ? 'สร้างจดโน้ต' : 'อัปเดตจดโน้ต'),
+                        ),
                         );
                       },
                     ),

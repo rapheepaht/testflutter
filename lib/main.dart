@@ -5,7 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:testflutter/config/database_helper.dart';
 import 'package:testflutter/config/service_locator.dart';
-import 'package:testflutter/data/datasources/remote/ping_remote_data_source.dart';
 import 'package:testflutter/presentation/bloc/note_bloc.dart';
 import 'package:testflutter/presentation/routes/app_router.dart';
 

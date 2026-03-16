@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:testflutter/main.dart' show themeNotifier;
 import 'package:testflutter/presentation/bloc/note_bloc.dart';
 import 'package:testflutter/presentation/routes/app_router.dart';
+import 'package:testflutter/presentation/widgets/tap_scale_widget.dart';
 
 @RoutePage()
 class ProfilePage extends StatelessWidget {
@@ -42,15 +43,23 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 38,
-                        backgroundColor: scheme.primaryContainer,
-                        child: Text(
-                          userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: scheme.primary,
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.elasticOut,
+                        builder: (context, value, child) {
+                          return Transform.scale(scale: value, child: child);
+                        },
+                        child: CircleAvatar(
+                          radius: 38,
+                          backgroundColor: scheme.primaryContainer,
+                          child: Text(
+                            userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: scheme.primary,
+                            ),
                           ),
                         ),
                       ),
@@ -125,7 +134,8 @@ class ProfilePage extends StatelessWidget {
                             ),
                       ),
                       const SizedBox(height: 12),
-                      OutlinedButton.icon(
+                      TapScaleWidget(
+                        child: OutlinedButton.icon(
                         onPressed: () {
                           context.router.pushAndPopUntil(
                             const LoginRoute(),
@@ -134,6 +144,7 @@ class ProfilePage extends StatelessWidget {
                         },
                         icon: const Icon(Icons.logout),
                         label: const Text('ออกจากระบบ'),
+                      ),
                       ),
                     ],
                   ),
